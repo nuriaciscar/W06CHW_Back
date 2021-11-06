@@ -9,7 +9,7 @@ const robotsSchema = new Schema({
     type: String,
     required: true,
   },
-  characteristics: {
+  features: {
     speed: {
       type: Number,
       required: true,

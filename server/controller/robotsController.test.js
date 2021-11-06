@@ -12,7 +12,7 @@ describe("Given a getRobots function", () => {
           _id: "1",
           name: "Wall-e",
           url: "http://macmagazine.com.br/blog/wp-content/uploads/2008/06/28-walle021.jpg",
-          characteristics: {
+          features: {
             speed: 2,
             stamina: 10,
             creationDate: 2222,
@@ -24,7 +24,7 @@ describe("Given a getRobots function", () => {
 
       const res = { json: jest.fn() };
 
-      await getRobots(res, null);
+      await getRobots(null, res);
 
       expect(Robot.find).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith(robots);
