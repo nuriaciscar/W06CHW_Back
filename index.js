@@ -4,9 +4,7 @@ const connectDB = require("./database/index");
 
 const initializeServer = require("./server/index");
 
-
-const port = process.env.SERVER_PORT ?? process.env.SERVER_PORT ?? 5000;
-
+const port = process.env.PORT ?? process.env.SERVER_PORT ?? 5000;
 
 (async () => {
   try {
