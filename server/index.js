@@ -2,6 +2,7 @@ const chalk = require("chalk");
 const morgan = require("morgan");
 const express = require("express");
 const debug = require("debug")("robots:server");
+const robotsRoutes = require("./routes/robotsRoutes");
 
 const app = express();
 
@@ -19,5 +20,7 @@ const initializeServer = (port) => {
 
 app.use(morgan("dev"));
 app.use(express.json());
+
+app.use("/robots", robotsRoutes);
 
 module.exports = initializeServer;
