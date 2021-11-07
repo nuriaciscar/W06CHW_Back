@@ -17,10 +17,28 @@ const getRobotsById = async (req, res, next) => {
       next(error);
     }
   } catch (error) {
-    error.code(400);
+    error.code = 400;
     error.message = "Not found";
     next(error);
   }
 };
 
-module.exports = { getRobots, getRobotsById };
+const deleteRobotsById = async (req, res, next) => {
+  const { idRobot } = req.params;
+  try {
+    const deletedRobot = await Robot.findByIdAndDelete(idRobot);
+    if (deletedRobot) {
+      res.json(deletedRobot);
+    } else {
+      const error = new Error("Robot to delete not found :(");
+      error.code = 404;
+      next(error);
+    }
+  } catch (error) {
+    error.code = 400;
+    error.message = "Cannot delete robot";
+    next(error);
+  }
+};
+
+module.exports = { getRobots, getRobotsById, deleteRobotsById };
