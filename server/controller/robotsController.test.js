@@ -1,6 +1,6 @@
 const Robot = require("../../database/models/robots");
 
-const { getRobots } = require("./robotsController");
+const { getRobots, getRobotsById } = require("./robotsController");
 
 jest.mock("../../database/models/robots");
 
@@ -28,6 +28,28 @@ describe("Given a getRobots function", () => {
 
       expect(Robot.find).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith(robots);
+    });
+  });
+});
+
+describe("Given a getPetsById function", () => {
+  describe("When it receives a request with an idRobot 1, a res object and a next function", () => {
+    test("Then it should invoke Robot.getById with idRobot 1", async () => {
+      Robot.findById = jest.fn().mockResolvedValue({});
+      const idRobot = 1;
+      const req = {
+        params: { idRobot },
+      };
+
+      const res = {
+        json: () => {},
+      };
+
+      const next = () => {};
+
+      await getRobotsById(req, res, next);
+
+      expect(Robot.findById).toHaveBeenCalledWith(idRobot);
     });
   });
 });
