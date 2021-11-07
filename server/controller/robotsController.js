@@ -17,7 +17,7 @@ const getRobotsById = async (req, res, next) => {
       next(error);
     }
   } catch (error) {
-    error.code(400);
+    error.code = 400;
     error.message = "Not found";
     next(error);
   }
@@ -35,7 +35,7 @@ const deleteRobotsById = async (req, res, next) => {
       next(error);
     }
   } catch (error) {
-    error.code(400);
+    error.code = 400;
     error.message = "Cannot delete robot";
     next(error);
   }
