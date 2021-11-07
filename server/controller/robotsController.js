@@ -6,18 +6,19 @@ const getRobots = async (req, res) => {
 };
 
 const getRobotsById = async (req, res, next) => {
-  const { _id } = req.params;
+  const { idRobot } = req.params;
   try {
-    const searchedRobot = await Robot.findById(_id);
+    const searchedRobot = await Robot.findById(idRobot);
     if (searchedRobot) {
       res.json(searchedRobot);
     } else {
       const error = new Error("Robot not found :(");
       error.code = 404;
-      throw error;
+      next(error);
     }
   } catch (error) {
     error.code(400);
+    error.message = "Not found";
     next(error);
   }
 };
