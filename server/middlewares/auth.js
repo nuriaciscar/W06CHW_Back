@@ -7,7 +7,8 @@ const auth = async (req, res, next) => {
     error.code = 401;
     next(error);
   } else {
-    const token = authHeader.split("")[1];
+    console.log(authHeader);
+    const token = authHeader.split(" ")[1];
     if (!token) {
       const error = new Error("Token missing");
       error.code = 401;
@@ -18,7 +19,7 @@ const auth = async (req, res, next) => {
         req.userId = user.id;
         next();
       } catch (error) {
-        error.message("Token invalid");
+        error.message = "Token invalid";
         error.code = 401;
         next(error);
       }
