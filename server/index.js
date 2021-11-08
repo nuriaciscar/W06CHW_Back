@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const debug = require("debug")("robots:server");
 const cors = require("cors");
 const robotsRoutes = require("./routes/robotsRoutes");
+const userRoutes = require("./routes/userRoutes");
 const { notFoundErrorHandler, generalErrorHandler } = require("./error");
 
 const app = express();
@@ -26,7 +27,7 @@ const initializeServer = (port) => {
     User.create({
       name: "nuria",
       username: "nunu",
-      password: bcrypt.hash("1234password", 10),
+      password: await bcrypt.hash("1234password", 10),
     });
   })();
 };
@@ -34,7 +35,8 @@ const initializeServer = (port) => {
 app.use(morgan("dev"));
 app.use(express.json());
 
-app.use("/robots", auth, robotsRoutes);
+app.use("/robots", robotsRoutes);
+app.use("user/login", userRoutes);
 
 app.use(notFoundErrorHandler);
 app.use(generalErrorHandler);
