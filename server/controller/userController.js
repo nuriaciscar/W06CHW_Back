@@ -24,7 +24,7 @@ const loginUser = async (req, res, next) => {
         },
         process.env.JWT_SECRET,
         {
-          expiresIn: 60 * 60,
+          expiresIn: 24 * 60 * 60,
         }
       );
       res.json({ token });
