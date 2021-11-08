@@ -4,7 +4,7 @@ const User = require("../../database/models/users");
 
 const loginUser = async (req, res, next) => {
   const { username, password } = req.body;
-  const user = await User.find({ username });
+  const user = await User.findOne({ username });
   if (!user) {
     const error = new Error("Not found");
     error.code = 401;
@@ -31,4 +31,4 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.export = loginUser;
+module.exports = loginUser;

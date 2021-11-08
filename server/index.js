@@ -5,7 +5,7 @@ const express = require("express");
 const debug = require("debug")("robots:server");
 const cors = require("cors");
 const robotsRoutes = require("./routes/robotsRoutes");
-const userRoutes = require("./routes/loginRoutes");
+const loginRoutes = require("./routes/loginRoutes");
 const { notFoundErrorHandler, generalErrorHandler } = require("./error");
 
 const app = express();
@@ -36,7 +36,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/robots", robotsRoutes);
-app.use("user/login", userRoutes);
+app.use("/user/login", loginRoutes);
 
 app.use(notFoundErrorHandler);
 app.use(generalErrorHandler);
