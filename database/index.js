@@ -5,6 +5,15 @@ const mongoose = require("mongoose");
 
 const connectDB = () =>
   new Promise((resolve, reject) => {
+    // mongoose.set("toJSON", {
+    //   virtuals: true,
+    //   transform: (doc, ret) => {
+    //     // eslint-disable-next-line no-underscore-dangle
+    //     delete ret._id;
+    //     // eslint-disable-next-line no-underscore-dangle
+    //     delete ret.__v;
+    //   },
+    // });
     mongoose.connect(process.env.MONGO_DBSTRING, (error) => {
       if (error) {
         debug(chalk.red("The database couldn't be started"));
