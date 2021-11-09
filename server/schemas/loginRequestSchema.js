@@ -7,4 +7,4 @@ const loginRequestSchema = {
   }),
 };
 
-module.exports = loginRequestSchema;
+module.exports = { loginRequestSchema };
