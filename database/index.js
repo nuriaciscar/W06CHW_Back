@@ -3,7 +3,7 @@ const debug = require("debug")("robots:database");
 const chalk = require("chalk");
 const mongoose = require("mongoose");
 
-const connectDB = () =>
+const connectDB = (connectionString) =>
   new Promise((resolve, reject) => {
     // mongoose.set("toJSON", {
     //   virtuals: true,
@@ -14,7 +14,8 @@ const connectDB = () =>
     //     delete ret.__v;
     //   },
     // });
-    mongoose.connect(process.env.MONGO_DBSTRING, (error) => {
+
+    mongoose.connect(connectionString, (error) => {
       if (error) {
         debug(chalk.red("The database couldn't be started"));
         debug(chalk.red(error.message));
@@ -24,6 +25,9 @@ const connectDB = () =>
       debug(chalk.green("Connected to database"));
       resolve();
     });
+    mongoose.connection.on("close", () => {
+      debug(chalk.green("Disconnected of database"));
+    });
   });
 
-module.exports = connectDB;
+module.exports = { connectDB };

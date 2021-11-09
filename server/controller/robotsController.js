@@ -2,7 +2,6 @@ const Robot = require("../../database/models/robots");
 
 const getRobots = async (req, res) => {
   try {
-    console.log("getRobots fn work");
     const robots = await Robot.find();
     res.json(robots);
   } catch (error) {

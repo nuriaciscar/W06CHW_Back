@@ -16,27 +16,33 @@ const app = express();
 app.use(cors());
 // const User = require("../database/models/users");
 
-const initializeServer = (port) => {
-  console.log("hi");
-  const server = app.listen(port, () => {
-    console.log(`connect: + ${port}`);
-    debug(chalk.blueBright(`Listening to port ${port}`));
-  });
-  server.on("error", (error) => {
-    debug(chalk.red("Error to initialize Server"));
-    if (error.code === "EADDRIUNSE") {
-      debug(chalk.red(`Port ${port} is already in use.`));
-    }
+const initializeServer = (port) =>
+  new Promise((resolve, reject) => {
+    const server = app.listen(port, () => {
+      console.log(`connect: + ${port}`);
+      debug(chalk.blueBright(`Listening to port ${port}`));
+      resolve(server);
+    });
+    server.on("error", (error) => {
+      debug(chalk.red("Error to initialize Server"));
+      if (error.code === "EADDRIUNSE") {
+        debug(chalk.red(`Port ${port} is already in use.`));
+      }
+      reject();
+    });
+
+    server.on("close", () => {
+      debug(chalk.blue("Server disconnected"));
+    });
   });
 
-  // (async () => {
-  //   User.create({
-  //     name: "nuria",
-  //     username: "nunu",
-  //     password: await bcrypt.hash("1234password", 10),
-  //   });
-  // })();
-};
+// (async () => {
+//   User.create({
+//     name: "nuria",
+//     username: "nunu",
+//     password: await bcrypt.hash("1234password", 10),
+//   });
+// })();
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -47,4 +53,4 @@ app.use("/user/login", loginRoutes);
 app.use(notFoundErrorHandler);
 app.use(generalErrorHandler);
 
-module.exports = initializeServer;
+module.exports = { app, initializeServer };
