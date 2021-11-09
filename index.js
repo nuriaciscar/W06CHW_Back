@@ -10,6 +10,7 @@ const port = process.env.PORT ?? process.env.SERVER_PORT ?? 5000;
   try {
     await connectDB();
     initializeServer(port);
+    console.log("BD connected");
   } catch (error) {
     process.exit(1);
   }

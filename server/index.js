@@ -6,7 +6,10 @@ const debug = require("debug")("robots:server");
 const cors = require("cors");
 const robotsRoutes = require("./routes/robotsRoutes");
 const loginRoutes = require("./routes/loginRoutes");
-const { notFoundErrorHandler, generalErrorHandler } = require("./error");
+const {
+  notFoundErrorHandler,
+  generalErrorHandler,
+} = require("./middlewares/error");
 const auth = require("./middlewares/auth");
 
 const app = express();
@@ -16,6 +19,7 @@ app.use(cors());
 const initializeServer = (port) => {
   console.log("hi");
   const server = app.listen(port, () => {
+    console.log(`connect: + ${port}`);
     debug(chalk.blueBright(`Listening to port ${port}`));
   });
   server.on("error", (error) => {
