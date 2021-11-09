@@ -14,6 +14,7 @@ app.use(cors());
 // const User = require("../database/models/users");
 
 const initializeServer = (port) => {
+  console.log("hi");
   const server = app.listen(port, () => {
     debug(chalk.blueBright(`Listening to port ${port}`));
   });

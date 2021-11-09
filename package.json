@@ -1,7 +1,6 @@
 {
   "name": "back_robots",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll --collect-coverage",
@@ -23,7 +22,8 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.25.2"
+    "eslint-plugin-import": "^2.25.2",
+    "jest": "^27.3.1"
   },
   "dependencies": {
     "axios": "^0.24.0",
@@ -33,10 +33,12 @@
     "debug": "^4.3.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "express-validation": "^3.0.8",
     "inquirer": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "mongoose": "^6.0.12",
     "morgan": "^1.10.0"
-  }
+  },
+  "description": ""
 }
