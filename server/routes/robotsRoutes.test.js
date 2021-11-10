@@ -9,32 +9,19 @@ const { app, initializeServer } = require("..");
 
 const request = supertest(app);
 
-let server;
-let token;
-
-beforeEach(async () => {
-  debug(chalk.green("Inside beforeEach"));
-  await connectDB(process.env.MONGO_DBSTRING_TEST);
-  server = await initializeServer(5002);
-  const { body } = await request
-    .post("/user/login")
-    .send({ username: "nunu", password: "1234password" })
-    .expect(200);
-  token = body.token;
-  await Robot.deleteMany({});
-  await Robot.create({
-    id: "12345",
+const fakeRobots = [
+  {
+    _id: "618b8479a71b26e71035482b",
     features: {
       speed: 7,
       stamina: 3,
       creationDate: 2700,
     },
-    name: "Eva",
+    name: "Evita",
     url: "https://www.desktopbackground.org/download/1920x1080/2013/10/22/658116_download-wall-e-and-eve-wallpapers-wide_3497x1463_h.jpg",
-  });
-
-  await Robot.create({
-    id: "1234567",
+  },
+  {
+    _id: "618b8479a71b26e71035482e",
     features: {
       speed: 10,
       stamina: 4,
@@ -42,43 +29,58 @@ beforeEach(async () => {
     },
     name: "Wall-e",
     url: "https://www.desktopbackground.org/download/1920x1080/2013/10/22/658116_download-wall-e-and-eve-wallpapers-wide_3497x1463_h.jpg",
+  },
+];
+
+let server;
+let token;
+
+beforeAll(async () => {
+  await connectDB(process.env.MONGO_DBSTRING_TEST);
+  server = await initializeServer(process.env.SERVER_PORT_TEST);
+  await Robot.deleteMany({});
+
+  const { body } = await request
+    .post("/user/login")
+    .send({ username: "nunu", password: "1234password" })
+    .expect(200);
+  token = body.token;
+});
+
+beforeEach(async () => {
+  debug(chalk.green("Inside beforeEach"));
+
+  await Robot.create(fakeRobots[0]);
+  await Robot.create(fakeRobots[1]);
+});
+
+afterAll(async (done) => {
+  await server.close(async () => {
+    await mongoose.connection.close();
+    done();
   });
 });
 
-afterAll(async () => {
-  await mongoose.connection.close;
-  await server.close;
-});
-
 describe("Given a /robots router", () => {
-  describe("When a GET request arrives to / ", () => {
+  describe("When a GET request arrives with token ", () => {
     test("Then it should respond with an array of robots and status 200", async () => {
       const { body } = await request
         .get("/robots")
-        .send("Authorization", `Bearer ${token.token}`)
+        .send("Authorization", `Bearer ${token}`)
         .expect(201);
 
-      expect(body).toHaveLength(2);
-      expect(body).toContainEqual({
-        id: "12345",
-        features: {
-          speed: 7,
-          stamina: 3,
-          creationDate: 2700,
-        },
-        name: "Eva",
-        url: "https://www.desktopbackground.org/download/1920x1080/2013/10/22/658116_download-wall-e-and-eve-wallpapers-wide_3497x1463_h.jpg",
+      const fakeRobotsWithId = fakeRobots.map((fakeRobot) => {
+        const fakeRobotWithId = {
+          ...fakeRobot,
+          id: fakeRobot._id,
+        };
+        delete fakeRobotWithId._id;
+        return fakeRobotWithId;
       });
-      expect(body).toContainEqual({
-        id: "1234567",
-        features: {
-          speed: 10,
-          stamina: 4,
-          creationDate: 2500,
-        },
-        name: "Wall-e",
-        url: "https://www.desktopbackground.org/download/1920x1080/2013/10/22/658116_download-wall-e-and-eve-wallpapers-wide_3497x1463_h.jpg",
-      });
+
+      expect(body).toHaveLength(fakeRobots.length);
+      expect(body).toContainEqual(fakeRobotsWithId[0]);
+      expect(body).toContainEqual(fakeRobotsWithId[1]);
     });
   });
 
@@ -113,7 +115,7 @@ describe("Given a /robots router", () => {
   describe("When a DELETE method arrives to /robots/delete/:idRobot with an id", () => {
     test("Then it should respond with a robot deleted and status 202", async () => {
       const { body } = await request
-        .get("/robots/delete/12345")
+        .delete("/robots/delete/12345")
         .send("Authorization", `Bearer ${token}`)
         .expect(202);
 
@@ -123,8 +125,8 @@ describe("Given a /robots router", () => {
   describe("When a DELETE method arrives to /robots/delete/:idRobot with an incorrect id", () => {
     test("Then it should respond with a status 404 Not Found", async () => {
       const { body } = await request
-        .get("/robots/delete/1245345")
-        .send("Authorization", `Bearer ${token}`)
+        .delete("/robots/delete/1245345")
+        .set("Authorization", `Bearer ${token}`)
         .expect(404);
 
       const expectedError = {
